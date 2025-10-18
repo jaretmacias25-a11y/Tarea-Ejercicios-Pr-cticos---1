@@ -874,7 +874,58 @@ Comparar con la versión iterativa.
        SiNo:
            Retornar n * factorialRecursivo(n - 1)
 
+#codigo
+def factorial_recursivo(n: int) -> int:
+    """
+    Calcula el factorial de un número usando recursividad.
+    Parámetros:
+        n (int): número entero no negativo
+    Retorna:
+        int: factorial de n
+    """
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial_recursivo(n - 1)
 
+# Prueba
+import unittest
+
+class TestFactorialRecursivo(unittest.TestCase):
+
+    def test_factorial_cero(self):
+        self.assertEqual(factorial_recursivo(0), 1)
+
+    def test_factorial_uno(self):
+        self.assertEqual(factorial_recursivo(1), 1)
+
+    def test_factorial_positivo(self):
+        self.assertEqual(factorial_recursivo(5), 120)
+
+    def test_factorial_numero_mayor(self):
+        self.assertEqual(factorial_recursivo(7), 5040)
+
+    def test_factorial_tipo_invalido(self):
+        with self.assertRaises(TypeError):
+            factorial_recursivo("texto")
+
+if __name__ == '__main__':
+    unittest.main()
+    
+# ANALISIS DE COMPLEJIDAD
+Complejidad temporal:
+
+En cada llamada recursiva se reduce el problema en 1 unidad (n - 1).
+
+Por lo tanto, hay n llamadas recursivas.
+
+Cada llamada realiza una multiplicación constante.
+  Complejidad temporal: O(n)
+
+  Complejidad espacial:
+
+Debido a la recursión, se crean n marcos de pila (stack frames) hasta llegar al caso base.
+   Complejidad espacial: O(n)
 ===============================================================================
 SECCIÓN 3: PILAS (STACKS)
 Grupo 4 - Ejercicios 14 al 25
@@ -990,7 +1041,76 @@ convertirse en "ALOH".
            resultado ← resultado + pila.pop()
        
        Retornar resultado
+       
+# Codigo
+class Pila:
+    """Implementa una pila simple usando una lista."""
+    def __init__(self):
+        self.items = []
 
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def push(self, elemento):
+        self.items.append(elemento)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        else:
+            raise IndexError("No se puede hacer pop en una pila vacía")
+
+    def peek(self):
+        if not self.is_empty():
+            return self.items[-1]
+        else:
+            raise IndexError("La pila está vacía")
+
+
+class InversorCadena:
+    """Usa una pila para invertir una cadena de texto."""
+
+    def __init__(self, texto: str):
+        self.texto = texto
+
+    def invertir(self) -> str:
+        pila = Pila()
+        # Apilar cada carácter
+        for caracter in self.texto:
+            pila.push(caracter)
+
+        # Desapilar para formar la cadena invertida
+        resultado = ""
+        while not pila.is_empty():
+            resultado += pila.pop()
+
+        return resultado
+# Prueba Unnitest
+# --- Pruebas unitarias ---
+def test_inversor_cadena():
+    """Pruebas unitarias para la clase InversorCadena."""
+    assert InversorCadena("hola").invertir() == "aloh", "Error: caso 1"
+    assert InversorCadena("Python").invertir() == "nohtyP", "Error: caso 2"
+    assert InversorCadena("").invertir() == "", "Error: caso 3"
+    print("✅ Todos los tests pasaron correctamente.")
+
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    texto = "Estructuras de Datos"
+    inversor = InversorCadena(texto)
+    print("Texto original :", texto)
+    print("Texto invertido:", inversor.invertir())
+    test_inversor_cadena()
+
+Análisis de Complejidad (fuera del programa)
+1. Complejidad Temporal:
+El recorrido de la cadena tiene complejidad O(n), donde n es la longitud del texto.
+El desapilado también recorre todos los caracteres, por lo que en total sigue siendo O(n).
+2. Complejidad Espacial:
+La pila almacena n caracteres del texto → O(n).
+La cadena resultado también tiene n caracteres → O(n).
+En conjunto, el algoritmo usa O(n) espacio adicional.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 16 [BÁSICO]: Validar Paréntesis Balanceados
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1091,6 +1211,108 @@ Ejemplos:
        
        Retornar pila.isEmpty()
 
+#Codigo
+class Pila:
+    """Implementa una pila simple usando una lista."""
+
+    def __init__(self):
+        """Inicializa una pila vacía."""
+        self.items = []
+
+    def push(self, elemento):
+        """
+        Agrega un elemento a la pila.
+
+        Parámetros:
+            elemento: valor que se agregará a la pila.
+        """
+        self.items.append(elemento)
+
+    def pop(self):
+        """
+        Elimina y retorna el elemento superior de la pila.
+
+        Retorna:
+            El elemento que estaba en la parte superior, o None si la pila está vacía.
+        """
+        if not self.is_empty():
+            return self.items.pop()
+        return None
+
+    def is_empty(self) -> bool:
+        """
+        Verifica si la pila está vacía.
+
+        Retorna:
+            bool: True si está vacía, False en caso contrario.
+        """
+        return len(self.items) == 0
+
+
+class ValidadorDelimitadores:
+    """Valida si los delimitadores en una expresión están balanceados."""
+
+    def __init__(self):
+        """Inicializa los conjuntos de delimitadores de apertura y cierre."""
+        self.aperturas = {'(', '[', '{'}
+        self.cierres = {')', ']', '}'}
+        self.pares = {')': '(', ']': '[', '}': '{'}
+
+    def validar(self, expresion: str) -> bool:
+        """
+        Verifica si los delimitadores de la expresión están correctamente balanceados.
+
+        Parámetros:
+            expresion (str): La cadena que contiene delimitadores.
+
+        Retorna:
+            bool: True si los delimitadores están balanceados, False en caso contrario.
+
+        Ejemplo:
+            >>> validar("{[()]}")
+            True
+        """
+        pila = Pila()
+
+        for caracter in expresion:
+            if caracter in self.aperturas:
+                pila.push(caracter)
+            elif caracter in self.cierres:
+                if pila.is_empty():
+                    return False
+                if pila.pop() != self.pares[caracter]:
+                    return False
+
+        return pila.is_empty()
+
+# --- Pruebas unitarias ---
+def test_validador_delimitadores():
+    """Pruebas unitarias para la clase ValidadorDelimitadores."""
+    validador = ValidadorDelimitadores()
+    assert validador.validar("{[()]}") is True, "Error: caso 1"
+    assert validador.validar("{[(])}") is False, "Error: caso 2"
+    assert validador.validar("{[}") is False, "Error: caso 3"
+    assert validador.validar("((()))") is True, "Error: caso 4"
+    assert validador.validar("") is True, "Error: caso 5"
+    print("✅ Todos los tests pasaron correctamente.")
+
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    validador = ValidadorDelimitadores()
+    expresion = "{[()]}"
+
+    print("Expresión:", expresion)
+    print("¿Está balanceada?:", validador.validar(expresion))
+    test_validador_delimitadores()
+
+# Análisis de Complejidad (fuera del programa)
+1. Complejidad Temporal:
+El algoritmo recorre cada carácter de la expresión una sola vez → O(n), donde n es la longitud de la cadena.
+Cada operación push y pop en la pila tiene costo O(1).
+👉 Por tanto, la complejidad total es O(n).
+2. Complejidad Espacial:
+En el peor de los casos, la pila almacena todos los caracteres de apertura → O(n) espacio adicional.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 18 [INTERMEDIO]: Evaluador de Expresiones Postfijas (RPN)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1205,6 +1427,77 @@ Ejemplo: "3 + 4 * 2" → "3 4 2 * +"
            agregar pila.pop() a salida
        
        Retornar unir salida con espacios
+#Codigo
+import re
+
+def infija_a_postfija(expresion: str) -> str:
+    """
+    Convierte una expresión matemática en notación infija a notación postfija.
+
+    Parámetros:
+        expresion (str): Expresión matemática (por ejemplo: "3 + 4 * 2 / ( 1 - 5 )").
+
+    Retorna:
+        str: Expresión equivalente en notación postfija.
+
+    Ejemplo:
+        >>> infija_a_postfija("3 + 4 * 2 / ( 1 - 5 )")
+        '3 4 2 * 1 5 - / +'
+    """
+    salida = []
+    pila = []
+    precedencia = {'+': 1, '-': 1, '*': 2, '/': 2}
+
+    # Dividir la expresión en tokens (números y operadores)
+    tokens = re.findall(r'\d+|[+\-*/()]', expresion)
+
+    for token in tokens:
+        if token.isdigit():
+            salida.append(token)
+        elif token == '(':
+            pila.append(token)
+        elif token == ')':
+            # Desapilar hasta encontrar '('
+            while pila and pila[-1] != '(':
+                salida.append(pila.pop())
+            pila.pop()  # Eliminar '('
+        else:
+            # Operadores: aplicar precedencia
+            while pila and pila[-1] != '(' and precedencia.get(pila[-1], 0) >= precedencia[token]:
+                salida.append(pila.pop())
+            pila.append(token)
+
+    # Vaciar la pila restante
+    while pila:
+        salida.append(pila.pop())
+
+    return ' '.join(salida)
+
+
+# --- Pruebas unitarias ---
+def test_infija_a_postfija():
+    """Pruebas unitarias para la función infija_a_postfija."""
+    assert infija_a_postfija("3 + 4") == "3 4 +", "Error: caso 1"
+    assert infija_a_postfija("3 + 4 * 2") == "3 4 2 * +", "Error: caso 2"
+    assert infija_a_postfija("( 1 + 2 ) * 3") == "1 2 + 3 *", "Error: caso 3"
+    assert infija_a_postfija("3 + 4 * 2 / ( 1 - 5 )") == "3 4 2 * 1 5 - / +", "Error: caso 4"
+    print("✅ Todos los tests pasaron correctamente.")
+
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    expresion = "3 + 4 * 2 / ( 1 - 5 )"
+    print("Expresión infija  :", expresion)
+    print("Expresión postfija:", infija_a_postfija(expresion))
+    test_infija_a_postfija()
+
+#Análisis de Complejidad (fuera del programa)
+1. Complejidad Temporal:
+Se recorre cada token una sola vez: O(n).
+Las operaciones de pila (push, pop) son O(1) cada una.
+👉 En total, el algoritmo tiene complejidad O(n).
+2. Complejidad Espacial:
+La pila y la lista de salida pueden almacenar hasta n elementos en el peor caso → O(n).
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 20 [INTERMEDIO]: Historial de Navegación
@@ -1241,7 +1534,99 @@ una para "atrás" y otra para "adelante". Implementar las funciones:
                error "No hay páginas siguientes"
            pilaAtras.push(paginaActual)
            paginaActual ← pilaAdelante.pop()
+#Codigo
+class Navegador:
+    """Simula la navegación entre páginas web mediante dos pilas."""
 
+    def __init__(self):
+        """Inicializa las pilas y la página actual."""
+        self.pilaAtras = []
+        self.pilaAdelante = []
+        self.paginaActual = None
+
+    def visitar(self, url: str) -> None:
+        """
+        Visita una nueva página y actualiza las pilas de navegación.
+
+        Parámetros:
+            url (str): La dirección de la nueva página web.
+        """
+        if self.paginaActual is not None:
+            self.pilaAtras.append(self.paginaActual)
+        self.paginaActual = url
+        self.pilaAdelante.clear()
+        print(f"Visiting: {self.paginaActual}")
+
+    def atras(self) -> None:
+        """
+        Regresa a la página anterior en la pila de navegación.
+        """
+        if not self.pilaAtras:
+            print("⚠️ No hay páginas anteriores.")
+            return
+        self.pilaAdelante.append(self.paginaActual)
+        self.paginaActual = self.pilaAtras.pop()
+        print(f"Volviendo a: {self.paginaActual}")
+
+    def adelante(self) -> None:
+        """
+        Avanza a la siguiente página en la pila de navegación.
+        """
+        if not self.pilaAdelante:
+            print("⚠️ No hay páginas siguientes.")
+            return
+        self.pilaAtras.append(self.paginaActual)
+        self.paginaActual = self.pilaAdelante.pop()
+        print(f"Avanzando a: {self.paginaActual}")
+
+
+# --- Pruebas unitarias ---
+def test_navegador():
+    """Pruebas unitarias para la clase Navegador."""
+    nav = Navegador()
+
+    nav.visitar("google.com")
+    nav.visitar("youtube.com")
+    nav.visitar("github.com")
+    assert nav.paginaActual == "github.com"
+
+    nav.atras()  # Debería volver a youtube
+    assert nav.paginaActual == "youtube.com"
+
+    nav.atras()  # Debería volver a google
+    assert nav.paginaActual == "google.com"
+
+    nav.adelante()  # Avanza a youtube
+    assert nav.paginaActual == "youtube.com"
+
+    nav.visitar("openai.com")  # Nueva visita borra el historial hacia adelante
+    assert nav.paginaActual == "openai.com"
+    assert not nav.pilaAdelante  # pilaAdelante vacía
+
+    print("✅ Todos los tests pasaron correctamente.")
+
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    navegador = Navegador()
+    navegador.visitar("google.com")
+    navegador.visitar("youtube.com")
+    navegador.visitar("github.com")
+
+    navegador.atras()
+    navegador.atras()
+    navegador.adelante()
+    navegador.visitar("openai.com")
+
+    test_navegador()
+
+#Análisis de Complejidad (fuera del programa)
+1. Complejidad Temporal:
+Cada operación (visitar, atras, adelante) realiza un número constante de operaciones append y pop.
+👉 Complejidad temporal: O(1) por operación.
+2. Complejidad Espacial:
+Las pilas pueden crecer hasta n, donde n es el número total de páginas visitadas.
+👉 Complejidad espacial: O(n).
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 21 [INTERMEDIO]: Verificar Palíndromos
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1271,6 +1656,71 @@ Ejemplos: "anilina", "radar", "reconocer"
        
        Retornar Verdadero
 
+#Codigo
+"""
+def es_palindromo(texto: str) -> bool:
+    """
+    Determina si un texto es un palíndromo utilizando una pila.
+
+    Parámetros:
+        texto (str): Cadena de texto a evaluar.
+
+    Retorna:
+        bool: True si el texto es palíndromo, False en caso contrario.
+    """
+    pila = []
+
+    # Normaliza el texto (minúsculas y sin espacios)
+    texto_limpio = ''.join(texto.lower().split())
+
+    longitud = len(texto_limpio)
+    mitad = longitud // 2
+
+    # Agrega la primera mitad de los caracteres a la pila
+    for i in range(mitad):
+        pila.append(texto_limpio[i])
+
+    # Si la longitud es impar, salta el carácter del medio
+    inicio = mitad if longitud % 2 == 0 else mitad + 1
+
+    # Compara los caracteres de la segunda mitad con los de la pila
+    for i in range(inicio, longitud):
+        if not pila or texto_limpio[i] != pila.pop():
+            return False
+
+    return True
+
+
+# --- Pruebas unitarias ---
+def test_palindromo():
+    """Pruebas para verificar el funcionamiento de es_palindromo()."""
+    assert es_palindromo("anita lava la tina") == True
+    assert es_palindromo("Amo la paloma") == True
+    assert es_palindromo("Hola mundo") == False
+    assert es_palindromo("Reconocer") == True
+    assert es_palindromo("Python") == False
+    print("✅ Todas las pruebas pasaron correctamente.")
+
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    texto = input("Ingrese una palabra o frase: ")
+    if es_palindromo(texto):
+        print("✅ Es un palíndromo.")
+    else:
+        print("❌ No es un palíndromo.")
+    test_palindromo()
+
+Análisis fuera del programa
+1. Descripción del algoritmo:
+El programa usa una pila para almacenar la primera mitad del texto, y luego compara los caracteres restantes (de derecha a izquierda) con los que va sacando de la pila.
+Si todos coinciden, el texto es un palíndromo.
+2. Complejidad Temporal:
+Cada carácter del texto se procesa una sola vez.
+👉 Complejidad temporal: O(n)
+3. Complejidad Espacial:
+La pila almacena solo la mitad del texto.
+👉 Complejidad espacial: O(n/2) ≈ O(n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 22 [INTERMEDIO]: Sistema Deshacer/Rehacer (Undo/Redo)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1306,6 +1756,122 @@ usando dos pilas. Debe soportar:
            pilaDeshacer.push(contenido)
            contenido ← pilaRehacer.pop()
 
+#Codigo
+class EditorTexto:
+    """
+    Clase que simula un editor de texto con operaciones de
+    escribir, deshacer y rehacer, utilizando pilas.
+    """
+
+    def __init__(self) -> None:
+        """
+        Inicializa el editor con contenido vacío y pilas
+        para manejar deshacer y rehacer.
+        """
+        self.contenido: str = ""
+        self.pilaDeshacer: list[str] = []
+        self.pilaRehacer: list[str] = []
+
+    def escribir(self, texto: str) -> None:
+        """
+        Agrega texto al contenido actual.
+
+        Args:
+            texto (str): Texto que se desea añadir al contenido.
+        """
+        self.pilaDeshacer.append(self.contenido)
+        self.contenido += texto
+        self.pilaRehacer.clear()
+
+    def deshacer(self) -> None:
+        """
+        Revierte la última acción realizada.
+        Mueve el estado actual a la pila de rehacer.
+        """
+        if not self.pilaDeshacer:
+            return
+        self.pilaRehacer.append(self.contenido)
+        self.contenido = self.pilaDeshacer.pop()
+
+    def rehacer(self) -> None:
+        """
+        Recupera una acción previamente deshecha.
+        Mueve el estado actual a la pila de deshacer.
+        """
+        if not self.pilaRehacer:
+            return
+        self.pilaDeshacer.append(self.contenido)
+        self.contenido = self.pilaRehacer.pop()
+
+    def mostrar(self) -> None:
+        """
+        Imprime el contenido actual del editor.
+        """
+        print(f"Contenido actual: '{self.contenido}'")
+
+#Pruebas unitarias
+import unittest
+from io import StringIO
+import sys
+
+# ---------------------------
+# 1. EditorTexto
+# ---------------------------
+class EditorTexto:
+    def __init__(self) -> None:
+        self.contenido: str = ""
+        self.pilaDeshacer: list[str] = []
+        self.pilaRehacer: list[str] = []
+
+    def escribir(self, texto: str) -> None:
+        self.pilaDeshacer.append(self.contenido)
+        self.contenido += texto
+        self.pilaRehacer.clear()
+
+    def deshacer(self) -> None:
+        if not self.pilaDeshacer:
+            return
+        self.pilaRehacer.append(self.contenido)
+        self.contenido = self.pilaDeshacer.pop()
+
+    def rehacer(self) -> None:
+        if not self.pilaRehacer:
+            return
+        self.pilaDeshacer.append(self.contenido)
+        self.contenido = self.pilaRehacer.pop()
+
+    def mostrar(self) -> str:
+        return f"Contenido actual: '{self.contenido}'"
+
+
+class TestEditorTexto(unittest.TestCase):
+    def test_escribir_y_mostrar(self):
+        editor = EditorTexto()
+        editor.escribir("Hola")
+        self.assertEqual(editor.mostrar(), "Contenido actual: 'Hola'")
+
+    def test_deshacer(self):
+        editor = EditorTexto()
+        editor.escribir("Hola")
+        editor.escribir(" Mundo")
+        editor.deshacer()
+        self.assertEqual(editor.contenido, "Hola")
+
+    def test_rehacer(self):
+        editor = EditorTexto()
+        editor.escribir("Hola")
+        editor.escribir(" Mundo")
+        editor.deshacer()
+        editor.rehacer()
+        self.assertEqual(editor.contenido, "Hola Mundo")
+
+#Análisis de complejidad
+Tiempo:
+escribir: O(1) amortizado (concatenar string depende del tamaño, pero en Python puede considerarse O(len(texto))).
+deshacer y rehacer: O(1) porque solo hacen operaciones de pila.
+mostrar: O(1).
+Espacio:
+Se almacenan copias del contenido en pilas, por lo que en el peor caso el espacio crece en O(n·m), donde n es el número de operaciones y m el tamaño promedio del contenido guardado en cada acción.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 23 [INTERMEDIO]: Torre de Hanoi
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1326,7 +1892,83 @@ auxiliar, con las reglas:
        hanoi(n-1, origen, auxiliar, destino)
        mover disco de origen a destino
        hanoi(n-1, auxiliar, destino, origen)
+#codigo
+def mover(origen: list[int], destino: list[int], nombre_origen: str, nombre_destino: str) -> None:
+    """
+    Mueve el disco superior de la torre origen a la torre destino.
 
+    Args:
+        origen (list[int]): Torre origen representada como lista (pila).
+        destino (list[int]): Torre destino representada como lista (pila).
+        nombre_origen (str): Nombre de la torre origen (para mostrar en pantalla).
+        nombre_destino (str): Nombre de la torre destino (para mostrar en pantalla).
+    """
+    disco = origen.pop()
+    destino.append(disco)
+    print(f"Mover disco {disco} de {nombre_origen} a {nombre_destino}")
+
+
+def hanoi(n: int, origen: list[int], destino: list[int], auxiliar: list[int],
+          nombre_origen: str, nombre_destino: str, nombre_auxiliar: str) -> None:
+    """
+    Resuelve el problema de la Torre de Hanoi usando recursión.
+
+    Args:
+        n (int): Número de discos a mover.
+        origen (list[int]): Torre origen.
+        destino (list[int]): Torre destino.
+        auxiliar (list[int]): Torre auxiliar.
+        nombre_origen (str): Nombre de la torre origen.
+        nombre_destino (str): Nombre de la torre destino.
+        nombre_auxiliar (str): Nombre de la torre auxiliar.
+    """
+    if n == 1:
+        mover(origen, destino, nombre_origen, nombre_destino)
+        return
+
+    hanoi(n - 1, origen, auxiliar, destino, nombre_origen, nombre_auxiliar, nombre_destino)
+    mover(origen, destino, nombre_origen, nombre_destino)
+    hanoi(n - 1, auxiliar, destino, origen, nombre_auxiliar, nombre_destino, nombre_origen)
+
+# pruebas
+def mover(origen, destino, nombre_origen, nombre_destino):
+    disco = origen.pop()
+    destino.append(disco)
+    print(f"Mover disco {disco} de {nombre_origen} a {nombre_destino}")
+
+def hanoi(n, origen, destino, auxiliar, nombre_origen, nombre_destino, nombre_auxiliar):
+    if n == 1:
+        mover(origen, destino, nombre_origen, nombre_destino)
+        return
+    hanoi(n - 1, origen, auxiliar, destino, nombre_origen, nombre_auxiliar, nombre_destino)
+    mover(origen, destino, nombre_origen, nombre_destino)
+    hanoi(n - 1, auxiliar, destino, origen, nombre_auxiliar, nombre_destino, nombre_origen)
+
+class TestHanoi(unittest.TestCase):
+    def test_hanoi_con_3_discos(self):
+        origen = [3, 2, 1]
+        destino = []
+        auxiliar = []
+
+        captured_output = StringIO()
+        sys.stdout = captured_output  # redirigir print
+
+        hanoi(3, origen, destino, auxiliar, "A", "C", "B")
+
+        sys.stdout = sys.__stdout__  # restaurar print
+
+        self.assertEqual(destino, [3, 2, 1])  # todos los discos en torre C
+
+#Complejidad de la Torre de Hanoi
+Tiempo:
+Número de movimientos = 2n - 1
+Crece exponencialmente → para pocos discos es rápido, pero para muchos se vuelve impracticable.
+Espacio:
+Se necesitan 3 torres con n discos en total → O(n).
+La recursión alcanza una profundidad máxima de n llamadas → O(n).
+➡️ Resumen final:
+Tiempo: O(2^n)
+Espacio: O(n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 24 [INTERMEDIO]: Validar Sintaxis HTML Simplificada
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1353,6 +1995,80 @@ Ejemplo inválido: "<html><body></html></body>"
                    Retornar Falso
        
        Retornar pila.isEmpty()
+#codigo
+import re
+
+def validar_html(codigo):
+    """
+    Valida si un código HTML simplificado tiene etiquetas balanceadas
+    y correctamente anidadas usando una pila.
+
+    Reglas:
+    - Solo se consideran etiquetas de apertura <tag> y cierre </tag>.
+    - No se contemplan atributos dentro de las etiquetas.
+    - No se contemplan etiquetas autocerradas (<br/>).
+
+    Args:
+        codigo (str): Cadena con el código HTML a validar.
+
+    Returns:
+        bool: True si las etiquetas están balanceadas y anidadas, 
+              False en caso contrario.
+
+    Ejemplos:
+        >>> validar_html("<html><body><h1>Título</h1></body></html>")
+        True
+        >>> validar_html("<html><body></html></body>")
+        False
+    """
+    pila = []
+
+    for etiqueta in re.finditer(r'</?([a-zA-Z0-9]+)>', codigo):
+        nombre = etiqueta.group(1)
+
+        # Si la etiqueta es de apertura
+        if codigo[etiqueta.start() + 1] != '/':
+            pila.append(nombre)
+        else:  # Etiqueta de cierre
+            if not pila or pila.pop() != nombre:
+                return False
+
+    return not pila
+
+#Complejidad
+import re
+
+def validar_html(codigo: str) -> bool:
+    pila = []
+    for etiqueta in re.finditer(r'</?([a-zA-Z0-9]+)>', codigo):
+        nombre = etiqueta.group(1)
+        if codigo[etiqueta.start() + 1] != '/':  # apertura
+            pila.append(nombre)
+        else:  # cierre
+            if not pila or pila.pop() != nombre:
+                return False
+    return not pila
+
+class TestValidadorHTML(unittest.TestCase):
+    def test_html_valido(self):
+        codigo = "<html><body><h1>Titulo</h1></body></html>"
+        self.assertTrue(validar_html(codigo))
+
+    def test_html_invalido(self):
+        codigo = "<html><body></html></body>"
+        self.assertFalse(validar_html(codigo))
+
+    def test_html_vacio(self):
+        codigo = ""
+        self.assertTrue(validar_html(codigo))  # no hay etiquetas, está balanceado
+
+#complejidad algoritmica
+Tiempo:
+El regex recorre el string completo → O(m), donde m = longitud del código.
+Cada etiqueta se procesa en O(1).
+Complejidad total: O(m).
+Espacio:
+En la pila se almacenan a lo sumo todas las etiquetas abiertas → O(n), donde n = número de etiquetas.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EJERCICIO 25 [INTERMEDIO]: Pila con Mínimo en O(1)
